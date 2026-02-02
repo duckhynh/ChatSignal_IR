@@ -3,7 +3,7 @@
    Supports: Light, Dark modes (Fluent UI Windows 11)
    ============================================ */
 
-/* Light Theme (Default) - Windows 11 Style */
+/* Light Theme (Default) - Windows 11 Style with Mica-like blur */
 :root,
 :root[data-theme="light"] {
     /* Brand Colors - Windows 11 Blue */
@@ -11,22 +11,22 @@
     --teams-brand-hover: #106EBE;
     --teams-brand-active: #005A9E;
     --teams-brand-light: #EBF3FC;
-    
+
     /* Background Colors */
     --teams-bg-primary: #F3F3F3;
     --teams-bg-secondary: #FFFFFF;
     --teams-bg-tertiary: #FAFAFA;
-    --teams-bg-hover: #E5E5E5;
-    --teams-bg-active: #D1D1D1;
-    --teams-bg-input: #FFFFFF;
-    --teams-bg-message: #F0F0F0;
-    --teams-bg-message-own: #E1F5FE;
-    
-    /* Surface Colors - Mica effect simulation */
-    --teams-surface-primary: #FFFFFF;
-    --teams-surface-secondary: #F9F9F9;
-    --teams-surface-elevated: #FFFFFF;
-    
+    --teams-bg-hover: #EDEFF1;
+    --teams-bg-active: #E1E5EA;
+    --teams-bg-input: rgba(255,255,255,0.9);
+    --teams-bg-message: rgba(245,245,247,0.9);
+    --teams-bg-message-own: rgba(225,245,254,0.9);
+
+    /* Surface Colors - use translucent surfaces to reveal mica overlay */
+    --teams-surface-primary: rgba(255,255,255,0.78);
+    --teams-surface-secondary: rgba(255,255,255,0.7);
+    --teams-surface-elevated: rgba(255,255,255,0.85);
+
     /* Text Colors */
     --teams-text-primary: #1A1A1A;
     --teams-text-secondary: #5C5C5C;
@@ -34,12 +34,12 @@
     --teams-text-disabled: #BDBDBD;
     --teams-text-on-brand: #FFFFFF;
     --teams-text-link: #0078D4;
-    
+
     /* Border Colors */
-    --teams-border-primary: #E0E0E0;
-    --teams-border-secondary: #C4C4C4;
+    --teams-border-primary: rgba(0,0,0,0.08);
+    --teams-border-secondary: rgba(0,0,0,0.12);
     --teams-border-focus: #0078D4;
-    
+
     /* Status Colors */
     --teams-status-success: #107C10;
     --teams-status-warning: #FFB900;
@@ -49,105 +49,105 @@
     --teams-status-busy: #D13438;
     --teams-status-dnd: #D13438;
     --teams-status-offline: #8A8A8A;
-    
+
     /* Navigation */
     --teams-nav-bg: #202020;
     --teams-nav-text: #FFFFFF;
-    --teams-nav-hover: rgba(255, 255, 255, 0.1);
-    --teams-nav-active: rgba(255, 255, 255, 0.15);
+    --teams-nav-hover: rgba(255, 255, 255, 0.06);
+    --teams-nav-active: rgba(255, 255, 255, 0.12);
     --teams-nav-indicator: #0078D4;
-    
+
     /* Shadows - Windows 11 style */
-    --teams-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.1);
-    --teams-shadow-md: 0 2px 4px rgba(0, 0, 0, 0.04), 0 4px 8px rgba(0, 0, 0, 0.08);
-    --teams-shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.04), 0 8px 16px rgba(0, 0, 0, 0.08);
-    --teams-shadow-xl: 0 8px 16px rgba(0, 0, 0, 0.06), 0 16px 32px rgba(0, 0, 0, 0.12);
-    
+    --teams-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+    --teams-shadow-md: 0 2px 6px rgba(0, 0, 0, 0.04), 0 6px 12px rgba(0, 0, 0, 0.06);
+    --teams-shadow-lg: 0 6px 12px rgba(0, 0, 0, 0.04), 0 12px 24px rgba(0, 0, 0, 0.06);
+    --teams-shadow-xl: 0 10px 20px rgba(0, 0, 0, 0.04), 0 20px 40px rgba(0, 0, 0, 0.08);
+
     /* Scrollbar */
     --teams-scrollbar-track: transparent;
     --teams-scrollbar-thumb: #C4C4C4;
     --teams-scrollbar-thumb-hover: #A0A0A0;
-    
+
     /* Modal Overlay */
-    --teams-overlay: rgba(0, 0, 0, 0.3);
-    
+    --teams-overlay: rgba(0, 0, 0, 0.18);
+
     /* Fluent UI specific */
-    --teams-card-bg: rgba(255, 255, 255, 0.7);
+    --teams-card-bg: rgba(255, 255, 255, 0.72);
     --teams-acrylic-bg: rgba(255, 255, 255, 0.85);
     --teams-border-radius: 8px;
 }
 
-/* Dark Theme - Pure Black (Jet Black Style) */
+/* Dark Theme - Soft Windows-like Dark (avoid pure OLED black) */
 :root[data-theme="dark"] {
-    /* Brand Colors - Bright Cyan (stands out on black) */
-    --teams-brand-primary: #00D9FF;
-    --teams-brand-hover: #00E5FF;
-    --teams-brand-active: #00B3CC;
-    --teams-brand-light: #001A1F;
-    
-    /* Background Colors - True black with grays */
-    --teams-bg-primary: #0a0a0a;
-    --teams-bg-secondary: #121212;
-    --teams-bg-tertiary: #0a0a0a;
-    --teams-bg-hover: #1f1f1f;
-    --teams-bg-active: #2a2a2a;
-    --teams-bg-input: #151515;
-    --teams-bg-message: #1a1a1a;
-    --teams-bg-message-own: #0d1f2d;
-    
-    /* Surface Colors - Pure dark blacks */
-    --teams-surface-primary: #121212;
-    --teams-surface-secondary: #0a0a0a;
-    --teams-surface-elevated: #1f1f1f;
-    
+    /* Brand Colors - Windows blue for consistency */
+    --teams-brand-primary: #0078D4;
+    --teams-brand-hover: #106EBE;
+    --teams-brand-active: #005A9E;
+    --teams-brand-light: rgba(0,120,212,0.08);
+
+    /* Background Colors - soft dark greys (not true black) */
+    --teams-bg-primary: #141516;
+    --teams-bg-secondary: #1a1a1c;
+    --teams-bg-tertiary: #171719;
+    --teams-bg-hover: #222225;
+    --teams-bg-active: #2a2a2c;
+    --teams-bg-input: #1e1e20;
+    --teams-bg-message: #1c1c1e;
+    --teams-bg-message-own: #11262f;
+
+    /* Surface Colors - subtle elevated panels (mica-like translucency) */
+    --teams-surface-primary: rgba(24,24,26,0.95);
+    --teams-surface-secondary: rgba(28,28,30,0.95);
+    --teams-surface-elevated: rgba(32,32,34,0.95);
+
     /* Text Colors */
-    --teams-text-primary: #ffffff;
-    --teams-text-secondary: #e0e0e0;
-    --teams-text-tertiary: #a0a0a0;
-    --teams-text-disabled: #606060;
-    --teams-text-on-brand: #000000;
-    --teams-text-link: #00D9FF;
-    
+    --teams-text-primary: #EAEAEA;
+    --teams-text-secondary: #CFCFCF;
+    --teams-text-tertiary: #A8A8A8;
+    --teams-text-disabled: #767676;
+    --teams-text-on-brand: #ffffff;
+    --teams-text-link: #7ABAFF;
+
     /* Border Colors */
-    --teams-border-primary: #2a2a2a;
-    --teams-border-secondary: #404040;
-    --teams-border-focus: #00D9FF;
-    
-    /* Status Colors - Bright for black background */
-    --teams-status-success: #00FF88;
-    --teams-status-warning: #FFD700;
-    --teams-status-error: #FF4444;
-    --teams-status-info: #00D9FF;
-    --teams-status-away: #FFA500;
-    --teams-status-busy: #FF4444;
-    --teams-status-dnd: #FF4444;
-    --teams-status-offline: #808080;
-    
+    --teams-border-primary: #2e2e2e;
+    --teams-border-secondary: #3a3a3a;
+    --teams-border-focus: #0078D4;
+
+    /* Status Colors */
+    --teams-status-success: #00C853;
+    --teams-status-warning: #FFD166;
+    --teams-status-error: #FF6B6B;
+    --teams-status-info: #0078D4;
+    --teams-status-away: #F6A623;
+    --teams-status-busy: #FF6B6B;
+    --teams-status-dnd: #FF6B6B;
+    --teams-status-offline: #8A8A8A;
+
     /* Navigation */
-    --teams-nav-bg: #0a0a0a;
+    --teams-nav-bg: #151617;
     --teams-nav-text: #ffffff;
-    --teams-nav-hover: rgba(255, 255, 255, 0.08);
-    --teams-nav-active: rgba(0, 217, 255, 0.15);
-    --teams-nav-indicator: #00D9FF;
-    
-    /* Shadows - Minimal on black */
-    --teams-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.8);
-    --teams-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.7);
-    --teams-shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.6);
-    --teams-shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.5);
-    
+    --teams-nav-hover: rgba(255,255,255,0.04);
+    --teams-nav-active: rgba(0,120,212,0.12);
+    --teams-nav-indicator: #0078D4;
+
+    /* Shadows - subtle on dark */
+    --teams-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.6);
+    --teams-shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+    --teams-shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.6);
+    --teams-shadow-xl: 0 12px 32px rgba(0, 0, 0, 0.55);
+
     /* Scrollbar */
     --teams-scrollbar-track: transparent;
-    --teams-scrollbar-thumb: #3a3a3a;
-    --teams-scrollbar-thumb-hover: #505050;
-    
-    /* Modal Overlay */
-    --teams-overlay: rgba(0, 0, 0, 0.8);
-    
+    --teams-scrollbar-thumb: #3c3c3c;
+    --teams-scrollbar-thumb-hover: #575757;
+
+    /* Modal Overlay - slightly lighter than pure black */
+    --teams-overlay: rgba(0, 0, 0, 0.6);
+
     /* Fluent UI specific */
-    --teams-card-bg: rgba(18, 18, 18, 0.9);
-    --teams-acrylic-bg: rgba(18, 18, 18, 0.95);
-    --teams-border-radius: 8px;
+    --teams-card-bg: rgba(30, 30, 32, 0.7);
+    --teams-acrylic-bg: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.015));
+    --teams-border-radius: 10px;
 }
 
 /* ============================================
@@ -333,7 +333,7 @@ body.chat-page {
 /* Chat List Panel */
 .teams-chat-list-panel {
     width: 320px;
-    background: var(--teams-bg-tertiary);
+    background: var(--teams-surface-primary);
     border-right: 1px solid var(--teams-border-primary);
     display: flex;
     flex-direction: column;
@@ -347,6 +347,27 @@ body.chat-page {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+/* Mica / Acrylic simulation for light theme surfaces */
+:root[data-theme="light"] .teams-chat-list-panel,
+:root[data-theme="light"] .teams-chat-list-header,
+:root[data-theme="light"] .teams-search-box,
+:root[data-theme="light"] .teams-surface-mica {
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    backdrop-filter: blur(10px) saturate(120%);
+    background-clip: padding-box;
+}
+
+/* Subtle global mica layer behind content (light theme) */
+:root[data-theme="light"] body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(255,255,255,0.04), rgba(0,120,212,0.02));
+    filter: blur(8px) saturate(110%);
 }
 
 .teams-chat-list-header h5 {
