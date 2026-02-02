@@ -250,6 +250,28 @@
             margin-right: 6px;
         }
 
+        /* Recalled file message */
+        .recalled-file-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: rgba(255, 68, 68, 0.1);
+            border-left: 3px solid var(--teams-status-error);
+            border-radius: 4px;
+            color: var(--teams-status-error);
+            font-style: italic;
+        }
+
+        .recalled-file-message i {
+            font-size: 18px;
+        }
+
+        .recalled-file-message span {
+            font-weight: 500;
+        }
+
+
         /* Recalled file/image specific styles */
         .teams-message-group.recalled .teams-file-attachment {
             opacity: 0.6;
@@ -923,36 +945,49 @@
                 const messageEl = document.querySelector(`[data-message-id="${messageId}"]`);
                 if (messageEl) {
                     messageEl.classList.add('recalled');
-                    const bubble = messageEl.querySelector('.teams-message-bubble');
-                    if (bubble) {
-                        bubble.classList.add('recalled-message');
-                        
-                        // Different message based on type
-                        let recallText = '';
-                        if (messageType === 'Image') {
-                            recallText = '<i class="bi bi-image"></i> <em>Image has been recalled</em>';
-                        } else if (messageType === 'File') {
-                            recallText = '<i class="bi bi-file-earmark"></i> <em>File has been recalled</em>';
-                        } else {
-                            recallText = '<i class="bi bi-ban"></i> <em>Message has been recalled</em>';
+                    
+                    // Handle different message types
+                    if (messageType === 'File') {
+                        // Replace file attachment with recall message
+                        const fileAttachment = messageEl.querySelector('.teams-file-attachment');
+                        if (fileAttachment) {
+                            fileAttachment.remove();
+                            
+                            const bubble = document.createElement('div');
+                            bubble.className = 'teams-message-bubble recalled-message';
+                            bubble.innerHTML = `
+                                <div class="recalled-file-message">
+                                    <i class="bi bi-file-earmark-x"></i>
+                                    <span>File has been recalled</span>
+                                </div>
+                            `;
+                            
+                            const wrapper = messageEl.querySelector('.teams-message-content-wrapper');
+                            if (wrapper) {
+                                wrapper.appendChild(bubble);
+                            }
+                        }
+                    } else if (messageType === 'Image') {
+                        // Blur and disable image
+                        const imagePreview = messageEl.querySelector('.teams-image-preview');
+                        if (imagePreview) {
+                            imagePreview.onclick = null;
+                            imagePreview.style.cursor = 'default';
+                            imagePreview.style.filter = 'blur(8px) brightness(0.7)';
                         }
                         
-                        bubble.innerHTML = recallText;
-                    }
-                    
-                    // Also update file attachments
-                    const fileAttachment = messageEl.querySelector('.teams-file-attachment');
-                    if (fileAttachment) {
-                        fileAttachment.onclick = null;
-                        fileAttachment.style.cursor = 'default';
-                        fileAttachment.style.opacity = '0.6';
-                    }
-                    
-                    const imagePreview = messageEl.querySelector('.teams-image-preview');
-                    if (imagePreview) {
-                        imagePreview.onclick = null;
-                        imagePreview.style.cursor = 'default';
-                        imagePreview.style.filter = 'blur(8px) brightness(0.7)';
+                        const bubble = messageEl.querySelector('.teams-message-bubble');
+                        if (bubble) {
+                            bubble.classList.add('recalled-message');
+                            bubble.innerHTML = '<i class="bi bi-image"></i> <em>Image has been recalled</em>';
+                        }
+                    } else {
+                        // Text message recall
+                        const bubble = messageEl.querySelector('.teams-message-bubble');
+                        if (bubble) {
+                            bubble.classList.add('recalled-message');
+                            bubble.innerHTML = '<i class="bi bi-ban"></i> <em>Message has been recalled</em>';
+                        }
                     }
                 }
                 if (sender !== username) {
