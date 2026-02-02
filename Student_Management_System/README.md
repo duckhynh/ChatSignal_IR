@@ -2,7 +2,7 @@
 
 Hướng dẫn chạy dự án (A → Z) — Razor Pages, .NET 8, SignalR, chunked file upload
 
-Ứng dụng cung cấp giao diện chat giống Microsoft Teams, hỗ trợ phòng chat, emoji, upload file lớn (chunked) và preview ảnh.
+Ứng dụng cung cấp giao diện chat, hỗ trợ phòng chat, emoji, upload file lớn (chunked) và preview ảnh.
 
 **Theme:** Light (Windows 11 Blue) + Dark (Pure Black/Jet Black)  
 **Features:** Real-time chat, file upload, typing indicator, message recall, responsive design
