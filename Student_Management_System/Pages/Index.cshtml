@@ -1,0 +1,770 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Chat";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="~/css/teams-theme.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('teams-app-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--teams-bg-primary);
+            min-height: 100vh;
+            color: var(--teams-text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Windows Acrylic Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(0, 120, 212, 0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0, 120, 212, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        [data-theme="dark"] body::before {
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(96, 205, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(96, 205, 255, 0.03) 0%, transparent 50%);
+        }
+
+        /* Main Container */
+        .app-container {
+            width: 100%;
+            max-width: 520px;
+        }
+
+        /* Header */
+        .app-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .app-logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 72px;
+            height: 72px;
+            background: var(--teams-brand-primary);
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0, 120, 212, 0.3);
+        }
+
+        [data-theme="dark"] .app-logo {
+            box-shadow: 0 4px 20px rgba(96, 205, 255, 0.2);
+        }
+
+        .app-logo i {
+            font-size: 36px;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--teams-text-primary);
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .app-subtitle {
+            font-size: 14px;
+            color: var(--teams-text-secondary);
+            font-weight: 400;
+        }
+
+        /* Card */
+        .card {
+            background: var(--teams-surface-primary);
+            border: 1px solid var(--teams-border-primary);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        [data-theme="dark"] .card {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .card-header {
+            padding: 16px 20px;
+            background: var(--teams-surface-secondary);
+            border-bottom: 1px solid var(--teams-border-primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card-header i {
+            font-size: 18px;
+            color: var(--teams-brand-primary);
+        }
+
+        .card-header h2 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--teams-text-primary);
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--teams-text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            font-size: 14px;
+            font-family: inherit;
+            border: 1px solid var(--teams-border-primary);
+            border-radius: 4px;
+            background: var(--teams-bg-input);
+            color: var(--teams-text-primary);
+            transition: all 0.15s ease;
+        }
+
+        .form-input:hover {
+            border-color: var(--teams-border-secondary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--teams-brand-primary);
+            box-shadow: 0 0 0 1px var(--teams-brand-primary);
+        }
+
+        .form-input::placeholder {
+            color: var(--teams-text-tertiary);
+        }
+
+        .form-input.error {
+            border-color: var(--teams-status-error);
+        }
+
+        .form-error {
+            display: none;
+            margin-top: 6px;
+            font-size: 12px;
+            color: var(--teams-status-error);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .form-error:empty {
+            display: none;
+        }
+
+        .form-error i {
+            font-size: 14px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-primary {
+            background: var(--teams-brand-primary);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background: var(--teams-brand-hover);
+        }
+
+        .btn-primary:active {
+            background: var(--teams-brand-active);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: var(--teams-bg-hover);
+            color: var(--teams-text-primary);
+            border: 1px solid var(--teams-border-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--teams-bg-active);
+        }
+
+        /* Room List */
+        .room-list {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .room-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: inherit;
+            border-bottom: 1px solid var(--teams-border-primary);
+            transition: background 0.1s ease;
+        }
+
+        .room-item:last-child {
+            border-bottom: none;
+        }
+
+        .room-item:hover {
+            background: var(--teams-bg-hover);
+        }
+
+        .room-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background: var(--teams-brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .room-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .room-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--teams-text-primary);
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .room-meta {
+            font-size: 12px;
+            color: var(--teams-text-secondary);
+        }
+
+        .room-arrow {
+            color: var(--teams-text-tertiary);
+            font-size: 14px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            padding: 32px 20px;
+            text-align: center;
+            color: var(--teams-text-tertiary);
+        }
+
+        .empty-state i {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* Divider */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+            font-size: 12px;
+            color: var(--teams-text-tertiary);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--teams-border-primary);
+        }
+
+        .divider span {
+            padding: 0 12px;
+        }
+
+        /* Quick Join Row */
+        .quick-join-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-join-row .form-input {
+            flex: 1;
+        }
+
+        /* Loading */
+        .loading {
+            display: flex;
+            justify-content: center;
+            padding: 32px;
+            gap: 6px;
+        }
+
+        .loading-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--teams-brand-primary);
+            border-radius: 50%;
+            animation: bounce 1.4s ease-in-out infinite;
+        }
+
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @@keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: 8px;
+            background: var(--teams-surface-elevated, #333);
+            color: white;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: toastIn 0.3s ease;
+            max-width: 400px;
+        }
+
+        .toast.success {
+            background: #107C10;
+        }
+
+        .toast.error {
+            background: #D13438;
+        }
+
+        .toast.warning {
+            background: #FFB900;
+            color: #000;
+        }
+
+        .toast.hiding {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        @@keyframes toastIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @@keyframes toastOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* Responsive */
+        @@media (max-width: 560px) {
+            .app-container {
+                max-width: 100%;
+            }
+
+            .quick-join-row {
+                flex-direction: column;
+            }
+
+            .quick-join-row .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Theme Toggle -->
+    <button class="btn btn-secondary theme-toggle" onclick="TeamsTheme.toggle()" title="Toggle theme">
+        <i class="bi bi-moon-fill" id="themeIcon"></i>
+    </button>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="app-logo">
+                <i class="bi bi-chat-fill"></i>
+            </div>
+            <h1 class="app-title">Chat</h1>
+            <p class="app-subtitle">Real-time messaging</p>
+        </header>
+
+        <!-- Create Room Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-plus-square"></i>
+                <h2>Create Room</h2>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" id="creatorName" class="form-input" placeholder="Enter your name">
+                    <div class="form-error" id="creatorNameError"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Room Name</label>
+                    <input type="text" id="newRoomName" class="form-input" placeholder="Enter room name">
+                    <div class="form-error" id="roomNameError"></div>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" id="createRoomBtn" onclick="createRoom()">
+                        <i class="bi bi-plus-lg"></i>
+                        Create
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rooms Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-collection"></i>
+                <h2>Rooms</h2>
+            </div>
+            <div class="room-list" id="roomList">
+                <div class="loading">
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                    <div class="loading-dot"></div>
+                </div>
+            </div>
+            <div class="card-body" style="border-top: 1px solid var(--teams-border-primary);">
+                <div class="divider">
+                    <span>Join with ID</span>
+                </div>
+                <div class="quick-join-row">
+                    <input type="text" id="username" class="form-input" placeholder="Username">
+                    <input type="text" id="roomId" class="form-input" placeholder="Room ID">
+                    <button class="btn btn-secondary" onclick="joinDirect()">
+                        Join
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/js/teams-helpers.js" asp-append-version="true"></script>
+    <script>
+        let allRooms = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadRooms();
+            updateThemeIcon();
+
+            document.getElementById('newRoomName').addEventListener('keypress', e => {
+                if (e.key === 'Enter') createRoom();
+            });
+            document.getElementById('creatorName').addEventListener('keypress', e => {
+                if (e.key === 'Enter') document.getElementById('newRoomName').focus();
+            });
+            document.getElementById('roomId').addEventListener('keypress', e => {
+                if (e.key === 'Enter') joinDirect();
+            });
+
+            // Clear error on input
+            document.getElementById('creatorName').addEventListener('input', function() {
+                this.classList.remove('error');
+                document.getElementById('creatorNameError').innerHTML = '';
+            });
+            document.getElementById('newRoomName').addEventListener('input', function() {
+                this.classList.remove('error');
+                document.getElementById('roomNameError').innerHTML = '';
+            });
+
+            document.addEventListener('themeChanged', updateThemeIcon);
+        });
+
+
+        function updateThemeIcon() {
+            const icon = document.getElementById('themeIcon');
+            icon.className = TeamsTheme.getTheme() === 'dark' ? 'bi bi-sun-fill' : 'bi bi-moon-fill';
+        }
+
+        async function loadRooms() {
+            try {
+                const response = await fetch('/api/rooms');
+                allRooms = await response.json();
+                renderRooms(allRooms);
+            } catch (error) {
+                console.error('Error loading rooms:', error);
+                document.getElementById('roomList').innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-exclamation-triangle d-block"></i>
+                        <p>Failed to load rooms</p>
+                    </div>`;
+            }
+        }
+
+        function renderRooms(rooms) {
+            const roomList = document.getElementById('roomList');
+            
+            if (rooms.length === 0) {
+                roomList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="bi bi-chat-square d-block"></i>
+                        <p>No rooms available</p>
+                    </div>`;
+                return;
+            }
+
+            roomList.innerHTML = rooms.map(room => `
+                <a href="/Chat?roomId=${room.roomId}" class="room-item">
+                    <div class="room-avatar" style="background: ${getColor(room.name)}">
+                        ${room.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="room-info">
+                        <div class="room-name">${escapeHtml(room.name)}</div>
+                        <div class="room-meta">
+                            ${room.createdBy ? escapeHtml(room.createdBy) : room.roomId}
+                        </div>
+                    </div>
+                    <i class="bi bi-chevron-right room-arrow"></i>
+                </a>
+            `).join('');
+        }
+
+        async function createRoom() {
+            const creatorInput = document.getElementById('creatorName');
+            const nameInput = document.getElementById('newRoomName');
+            const creatorError = document.getElementById('creatorNameError');
+            const roomError = document.getElementById('roomNameError');
+            const btn = document.getElementById('createRoomBtn');
+            
+            const creatorName = creatorInput.value.trim();
+            const name = nameInput.value.trim();
+
+            // Clear previous errors
+            creatorInput.classList.remove('error');
+            nameInput.classList.remove('error');
+            creatorError.innerHTML = '';
+            roomError.innerHTML = '';
+
+            let hasError = false;
+            if (!creatorName) {
+                creatorInput.classList.add('error');
+                creatorError.innerHTML = '<i class="bi bi-exclamation-circle"></i> Please enter your username';
+                creatorInput.focus();
+                hasError = true;
+            }
+            if (!name) {
+                nameInput.classList.add('error');
+                roomError.innerHTML = '<i class="bi bi-exclamation-circle"></i> Please enter room name';
+                if (!hasError) nameInput.focus();
+                hasError = true;
+            }
+            if (hasError) return;
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-arrow-repeat spin"></i> Creating...';
+
+            try {
+                const response = await fetch('/api/rooms', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, createdBy: creatorName })
+                });
+
+                if (response.ok) {
+                    const room = await response.json();
+                    showToast('Room created successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.href = `/Chat?roomId=${room.roomId}&username=${encodeURIComponent(creatorName)}`;
+                    }, 500);
+                } else if (response.status === 409) {
+                    const data = await response.json();
+                    nameInput.classList.add('error');
+                    roomError.innerHTML = `<i class="bi bi-exclamation-circle"></i> ${data.error || 'A room with this name already exists'}`;
+                    nameInput.focus();
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-plus-lg"></i> Create';
+                } else {
+                    throw new Error('Failed');
+                }
+            } catch (error) {
+                roomError.innerHTML = '<i class="bi bi-exclamation-circle"></i> Failed to create room. Please try again.';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="bi bi-plus-lg"></i> Create';
+            }
+        }
+
+
+        function joinDirect() {
+            const usernameInput = document.getElementById('username');
+            const roomIdInput = document.getElementById('roomId');
+            
+            
+            const username = usernameInput.value.trim();
+            const roomId = roomIdInput.value.trim();
+
+            usernameInput.classList.remove('error');
+            roomIdInput.classList.remove('error');
+
+            let hasError = false;
+            if (!username) {
+                usernameInput.classList.add('error');
+                usernameInput.focus();
+                showToast('Please enter username', 'error');
+                hasError = true;
+            }
+            if (!roomId) {
+                roomIdInput.classList.add('error');
+                if (!hasError) {
+                    roomIdInput.focus();
+                    showToast('Please enter Room ID', 'error');
+                }
+                hasError = true;
+            }
+            if (hasError) return;
+
+            window.location.href = `/Chat?roomId=${roomId}&username=${encodeURIComponent(username)}`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function getColor(name) {
+            const colors = [
+                '#0078D4', '#00B294', '#8764B8', '#E74856', 
+                '#FFB900', '#00CC6A', '#0099BC', '#767676'
+            ];
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        // Toast notification
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: 'bi-check-circle-fill',
+                error: 'bi-x-circle-fill',
+                warning: 'bi-exclamation-triangle-fill',
+                info: 'bi-info-circle-fill'
+            };
+            
+            toast.innerHTML = `<i class="bi ${icons[type] || icons.info}"></i><span>${escapeHtml(message)}</span>`;
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.classList.add('hiding');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

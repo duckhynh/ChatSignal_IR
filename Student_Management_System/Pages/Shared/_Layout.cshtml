@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>@ViewData["Title"] - Teams Chat</title>
+    
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+    
+    <!-- Teams Theme CSS -->
+    <link rel="stylesheet" href="~/css/teams-theme.css" asp-append-version="true" />
+    
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Student_Management_System.styles.css" asp-append-version="true" />
+    
+    <!-- Inline critical theme to prevent FOUC -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('teams-app-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm" style="background: var(--teams-surface-primary); border-bottom: 1px solid var(--teams-border-primary);">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center gap-2" asp-area="" asp-page="/Index" style="color: var(--teams-text-primary);">
+                    <i class="bi bi-chat-dots-fill" style="color: var(--teams-brand-primary);"></i>
+                    <span>Teams Chat</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" 
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                        style="border-color: var(--teams-border-primary);">
+                    <i class="bi bi-list" style="color: var(--teams-text-secondary);"></i>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link d-flex align-items-center gap-2" asp-area="" asp-page="/Index" style="color: var(--teams-text-secondary);">
+                                <i class="bi bi-door-open"></i>
+                                <span>Rooms</span>
+                            </a>
+                        </li>
+                    </ul>
+                    
+                    <!-- Theme Switcher -->
+                    <div class="teams-theme-switcher d-flex align-items-center gap-1">
+                        <button class="teams-theme-btn" data-theme="light" title="Light Mode">
+                            <i class="bi bi-sun-fill"></i>
+                        </button>
+                        <button class="teams-theme-btn" data-theme="dark" title="Dark Mode">
+                            <i class="bi bi-moon-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <div class="container-fluid p-0">
+        <main role="main">
+            @RenderBody()
+        </main>
+    </div>
+
+
+    <footer class="border-top footer text-muted" style="background: var(--teams-surface-secondary); border-color: var(--teams-border-primary) !important;">
+        <div class="container py-2">
+            <small style="color: var(--teams-text-tertiary);">
+                &copy; 2024 - Teams Chat - ASP.NET Core + SignalR | 
+                <i class="bi bi-palette"></i> Theme: <span id="currentTheme">Light</span>
+            </small>
+        </div>
+    </footer>
+
+    <!-- Core Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Teams Helper Scripts -->
+    <script src="~/js/teams-helpers.js" asp-append-version="true"></script>
+    
+    <!-- Site Scripts -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    <!-- Update theme label -->
+    <script>
+        document.addEventListener('themeChanged', function(e) {
+            const themeNames = { 'light': 'Light', 'dark': 'Dark', 'high-contrast': 'High Contrast' };
+            document.getElementById('currentTheme').textContent = themeNames[e.detail.theme] || e.detail.theme;
+        });
+        
+        // Set initial theme label
+        document.addEventListener('DOMContentLoaded', function() {
+            const theme = document.documentElement.getAttribute('data-theme');
+            const themeNames = { 'light': 'Light', 'dark': 'Dark', 'high-contrast': 'High Contrast' };
+            const label = document.getElementById('currentTheme');
+            if (label) label.textContent = themeNames[theme] || theme;
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
