@@ -963,6 +963,8 @@ npm-debug.log
 npm-error.log
 yarn-error.log
 dist/
+# But keep library files in wwwroot/lib
+!wwwroot/lib/**/dist/
 package-lock.json
 
 # Exclude nothing important
