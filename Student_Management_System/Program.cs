@@ -28,12 +28,11 @@ builder.WebHost.ConfigureKestrel(options =>
     options.Limits.MaxRequestBodySize = 1024L * 1024 * 1024; // 1GB per request
     options.Limits.MaxRequestLineSize = 16 * 1024; // 16KB
     options.Limits.MaxRequestHeadersTotalSize = 64 * 1024; // 64KB
-    
-    // Listen trên t?t c? network interfaces v?i c?ng 5000 (HTTP) và 5001 (HTTPS)
-    // Thay localhost b?ng 0.0.0.0 ?? máy khác trong LAN có th? truy c?p
-    options.ListenAnyIP(5000); // HTTP - http://[IP_LAN]:5000
-    options.ListenAnyIP(5001, listenOptions => listenOptions.UseHttps()); // HTTPS
 });
+
+// C?u hình URLs - h? tr? c? localhost và LAN
+// 0.0.0.0 = listen trên t?t c? network interfaces (localhost + IP LAN)
+builder.WebHost.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
 
 var app = builder.Build();
 
