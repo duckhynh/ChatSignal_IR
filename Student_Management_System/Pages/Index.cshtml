@@ -481,6 +481,41 @@
     <!-- Toast Container -->
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- Modal: Nh?p username tr??c khi vào room -->
+    <div class="modal fade" id="joinRoomModal" tabindex="-1" aria-labelledby="joinRoomModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background: var(--teams-surface-primary); border: 1px solid var(--teams-border-primary); border-radius: 8px;">
+                <div class="modal-header" style="border-bottom: 1px solid var(--teams-border-primary); padding: 16px 20px;">
+                    <h5 class="modal-title" id="joinRoomModalLabel" style="color: var(--teams-text-primary); font-weight: 600;">
+                        <i class="bi bi-box-arrow-in-right me-2" style="color: var(--teams-brand-primary);"></i>
+                        Tham gia phòng chat
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: var(--teams-close-btn-filter, none);"></button>
+                </div>
+                <div class="modal-body" style="padding: 20px;">
+                    <p style="color: var(--teams-text-secondary); margin-bottom: 16px;">
+                        B?n ?ang tham gia: <strong id="joinModalRoomName" style="color: var(--teams-brand-primary);"></strong>
+                    </p>
+                    <div class="form-group">
+                        <label class="form-label">Tên hi?n th? c?a b?n</label>
+                        <input type="text" id="joinUsername" class="form-input" placeholder="Nh?p tên c?a b?n..." 
+                               onkeypress="if(event.key === 'Enter') confirmJoinRoom();"
+                               oninput="this.classList.remove('error'); document.getElementById('joinUsernameError').innerHTML = '';">
+                        <div class="form-error" id="joinUsernameError"></div>
+                    </div>
+                </div>
+                <div class="modal-footer" style="border-top: 1px solid var(--teams-border-primary); padding: 12px 20px;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="margin-right: 8px;">
+                        <i class="bi bi-x-lg me-1"></i> H?y
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="confirmJoinRoom()" style="width: auto;">
+                        <i class="bi bi-check-lg me-1"></i> Vào phòng chat
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Theme Toggle -->
     <button class="btn btn-secondary theme-toggle" onclick="TeamsTheme.toggle()" title="Toggle theme">
         <i class="bi bi-moon-fill" id="themeIcon"></i>
@@ -632,20 +667,66 @@
                 return;
             }
 
+            // Render danh sách room - click ?? m? modal nh?p username
             roomList.innerHTML = rooms.map(room => `
-                <a href="/Chat?roomId=${room.roomId}" class="room-item">
+                <div class="room-item" onclick="openJoinRoomModal('${room.roomId}', '${escapeHtml(room.name)}')" style="cursor: pointer;">
                     <div class="room-avatar" style="background: ${getColor(room.name)}">
                         ${room.name.charAt(0).toUpperCase()}
                     </div>
                     <div class="room-info">
                         <div class="room-name">${escapeHtml(room.name)}</div>
                         <div class="room-meta">
-                            ${room.createdBy ? escapeHtml(room.createdBy) : room.roomId}
+                            ${room.createdBy ? 'Created by: ' + escapeHtml(room.createdBy) : 'ID: ' + room.roomId}
                         </div>
                     </div>
                     <i class="bi bi-chevron-right room-arrow"></i>
-                </a>
+                </div>
             `).join('');
+        }
+
+        // M? modal ?? nh?p username tr??c khi vào room
+        let selectedRoomId = '';
+        let selectedRoomName = '';
+
+        function openJoinRoomModal(roomId, roomName) {
+            selectedRoomId = roomId;
+            selectedRoomName = roomName;
+            
+            document.getElementById('joinModalRoomName').textContent = roomName;
+            document.getElementById('joinUsername').value = '';
+            document.getElementById('joinUsernameError').innerHTML = '';
+            document.getElementById('joinUsername').classList.remove('error');
+            
+            const modal = new bootstrap.Modal(document.getElementById('joinRoomModal'));
+            modal.show();
+            
+            // Focus vào input sau khi modal hi?n
+            setTimeout(() => document.getElementById('joinUsername').focus(), 200);
+        }
+
+        // X? lý join room t? modal
+        function confirmJoinRoom() {
+            const usernameInput = document.getElementById('joinUsername');
+            const username = usernameInput.value.trim();
+            const errorDiv = document.getElementById('joinUsernameError');
+
+            // Validation
+            if (!username) {
+                usernameInput.classList.add('error');
+                errorDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> Vui lòng nh?p tên c?a b?n';
+                usernameInput.focus();
+                return;
+            }
+
+            if (username.length < 2) {
+                usernameInput.classList.add('error');
+                errorDiv.innerHTML = '<i class="bi bi-exclamation-circle"></i> Tên ph?i có ít nh?t 2 ký t?';
+                usernameInput.focus();
+                return;
+            }
+
+            // Chuy?n ??n trang Chat v?i roomId và username
+            window.location.href = `/Chat?roomId=${encodeURIComponent(selectedRoomId)}&username=${encodeURIComponent(username)}`;
         }
 
         async function createRoom() {
@@ -805,5 +886,8 @@
             }, 3000);
         }
     </script>
+    
+    <!-- Bootstrap JS cho Modal -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
